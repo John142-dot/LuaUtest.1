@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuaU Input/Output</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .output {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>LuaU Input/Output</h1>
+
+    <label for="inputLua">Enter LuaU Code:</label>
+    <textarea id="inputLua" placeholder="Write your LuaU code here..."></textarea>
+
+    <button onclick="printOutput()">Print Output</button>
+
+    <label for="output">Output:</label>
+    <textarea id="output" class="output" readonly></textarea>
+
+    <script>
+        async function printOutput() {
+            const inputCode = document.getElementById("inputLua").value;
+            
+            // Send Lua code to the server for execution
+            const response = await fetch('/execute-lua', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code: inputCode })
+            });
+
+            // Get the response from the server
+            const result = await response.json();
+
+            // Display result or error in the output
+            if (result.error) {
+                document.getElementById("output").value = "Error: " + result.error;
+            } else {
+                document.getElementById("output").value = result.result;
+            }
+        }
+    </script>
+
+</body>
+</html>
